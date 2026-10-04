@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kiosque de l’internat</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Figtree:wght@400;500;700&amp;display=swap">
+<style>
+:root{--bg:#F5F6F2;--panel:#FFFFFF;--ink:#14221B;--muted:#56665C;--line:#D5DACF;--green:#1C6B45;--on-green:#FFFFFF;--stock:#B83A06;--thumb:#E4EBE1;--warn-bg:#FFF1E6;--warn-ink:#8A3205;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1713;--panel:#17221C;--ink:#E9F0EA;--muted:#A3B5A9;--line:#2B3B31;--green:#4CC38A;--on-green:#08140D;--stock:#FF9A5C;--thumb:#223128;--warn-bg:#3A2515;--warn-ink:#FFC9A3}}
+:root[data-theme="dark"]{--bg:#0F1713;--panel:#17221C;--ink:#E9F0EA;--muted:#A3B5A9;--line:#2B3B31;--green:#4CC38A;--on-green:#08140D;--stock:#FF9A5C;--thumb:#223128;--warn-bg:#3A2515;--warn-ink:#FFC9A3}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Figtree','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.45}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 140px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+h1{font-family:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;font-weight:800;font-size:36px;line-height:1.05;margin:0 0 8px;letter-spacing:-0.02em}
+h2{font-family:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:23px;line-height:1.15;margin:30px 0 4px}
+.sub{color:var(--muted);margin:0 0 6px}
+.rules{margin:14px 0 0;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;font-size:15px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 0 8px}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:500;white-space:nowrap;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--green);color:var(--on-green);border-color:var(--green)}
+.row{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;background:var(--thumb);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',Arial,sans-serif;font-weight:800;font-size:22px;color:var(--green)}
+.name{font-weight:700;line-height:1.25}
+.meta{font-size:14px;color:var(--muted)}
+.meta .st{color:var(--stock);font-weight:700}
+.btn{min-height:44px;padding:0 18px;border-radius:8px;border:2px solid var(--green);background:var(--green);color:var(--on-green);font:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn.alt{background:transparent;color:var(--green)}
+.btn.small{padding:0 12px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.step{display:flex;align-items:center;gap:6px}
+.sq{width:44px;height:44px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-size:22px;cursor:pointer}
+.qty{min-width:22px;text-align:center;font-weight:700}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:center;gap:12px}
+.bar .tot{font-weight:700}
+.box{margin-top:16px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.line{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
+.line.big{font-weight:800;font-size:19px;border-top:1px solid var(--line);margin-top:6px;padding-top:10px}
+.warn{margin-top:12px;padding:12px 14px;background:var(--warn-bg);color:var(--warn-ink);border-radius:8px;font-size:15px}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input[type=text],select,textarea{width:100%;min-height:44px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:150px;resize:vertical}
+.cb{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700}
+.cb input{width:24px;height:24px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.arow{padding:12px 0;border-bottom:1px solid var(--line)}
+.arow .acts{margin-top:8px}
+.foot{margin-top:34px;color:var(--muted);font-size:15px}
+.foot a{color:var(--green);font-weight:700}
+.note{margin-top:10px;color:var(--muted);font-size:15px}
+.preview{width:96px;height:96px;border-radius:8px;object-fit:cover;display:block;margin-top:8px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="application/json" id="data">{"title": "Kiosque de l’internat", "tagline": "Boissons et snacks, livrés à l’internat. Une idée de produit ? Tes suggestions sont les bienvenues.", "min": 5, "fee": 2, "threshold": 25, "twint": "077 498 04 40", "delivery": {"1": {"cut": "16:00", "from": "18:00"}, "2": {"cut": "16:00", "from": "18:00"}, "3": {"cut": "16:00", "from": "18:00"}, "4": {"cut": "17:00", "from": "18:30"}}, "snap": "Mathisbarras20", "email": "mathis.brrs@eduge.ch", "cats": ["Boissons", "Friandises", "Snacks salés", "Autre"], "items": [{"id": "i1", "n": "Red Bull Classic 25 cl", "p": 2.0, "sp": 2.3, "c": "Boissons", "s": false}, {"id": "i2", "n": "Red Bull Sugarfree 25 cl", "p": 2.0, "sp": 2.3, "c": "Boissons", "s": false}, {"id": "i3", "n": "Red Bull Fruitée 25 cl", "p": 2.15, "sp": 2.45, "c": "Boissons", "s": false}, {"id": "i4", "n": "Monster Original 50 cl", "p": 3.4, "sp": 3.7, "c": "Boissons", "s": false}, {"id": "i5", "n": "Monster Ultra White 50 cl", "p": 3.4, "sp": 3.7, "c": "Boissons", "s": false}, {"id": "i6", "n": "Monster Mango Loco 50 cl", "p": 3.5, "sp": 3.8, "c": "Boissons", "s": false}, {"id": "i7", "n": "Lipton Ice Tea Pêche 33 cl", "p": 1.55, "sp": 1.85, "c": "Boissons", "s": false}, {"id": "i8", "n": "Lipton Ice Tea Green 33 cl", "p": 1.55, "sp": 1.85, "c": "Boissons", "s": false}, {"id": "i9", "n": "Nestea Pêche 33 cl", "p": 1.6, "sp": 1.9, "c": "Boissons", "s": false}, {"id": "i10", "n": "Volvic Juicy Exotique 50 cl", "p": 1.9, "sp": 2.2, "c": "Boissons", "s": false}, {"id": "i11", "n": "Volvic Juicy Citron 50 cl", "p": 1.9, "sp": 2.2, "c": "Boissons", "s": false}, {"id": "i12", "n": "Coca-Cola Classic 33 cl", "p": 1.75, "sp": 2.05, "c": "Boissons", "s": false}, {"id": "i13", "n": "Coca-Cola Zero 33 cl", "p": 1.75, "sp": 2.05, "c": "Boissons", "s": false}, {"id": "i14", "n": "Oasis Tropical 33 cl", "p": 1.55, "sp": 1.85, "c": "Boissons", "s": false}, {"id": "i15", "n": "Oasis Pomme-Cassis-Framboise 33 cl", "p": 1.55, "sp": 1.85, "c": "Boissons", "s": false}, {"id": "i16", "n": "Fanta Orange 33 cl", "p": 1.6, "sp": 1.9, "c": "Boissons", "s": false}, {"id": "i17", "n": "Sprite 33 cl", "p": 1.6, "sp": 1.9, "c": "Boissons", "s": false}, {"id": "i18", "n": "Schweppes Agrumes 33 cl", "p": 1.8, "sp": 2.1, "c": "Boissons", "s": false}, {"id": "i19", "n": "Schweppes Indian Tonic 33 cl", "p": 1.8, "sp": 2.1, "c": "Boissons", "s": false}, {"id": "i20", "n": "Perrier Menthe 33 cl", "p": 1.65, "sp": 1.95, "c": "Boissons", "s": false}, {"id": "i21", "n": "Perrier Citron 33 cl", "p": 1.65, "sp": 1.95, "c": "Boissons", "s": false}, {"id": "i22", "n": "Kinder Bueno Classic", "p": 1.65, "sp": 1.95, "c": "Friandises", "s": false}, {"id": "i23", "n": "Kinder Bueno White", "p": 1.65, "sp": 1.95, "c": "Friandises", "s": false}, {"id": "i24", "n": "Kinder Bueno Dark", "p": 1.75, "sp": 2.05, "c": "Friandises", "s": false}, {"id": "i25", "n": "Twix", "p": 1.4, "sp": 1.7, "c": "Friandises", "s": false}, {"id": "i26", "n": "Snickers", "p": 1.4, "sp": 1.7, "c": "Friandises", "s": false}, {"id": "i27", "n": "Mars", "p": 1.4, "sp": 1.7, "c": "Friandises", "s": false}, {"id": "i28", "n": "Bounty", "p": 1.4, "sp": 1.7, "c": "Friandises", "s": false}, {"id": "i29", "n": "M&M's Arachide", "p": 2.1, "sp": 2.4, "c": "Friandises", "s": false}, {"id": "i30", "n": "M&M's Choco", "p": 2.1, "sp": 2.4, "c": "Friandises", "s": false}, {"id": "i31", "n": "Maltesers", "p": 2.1, "sp": 2.4, "c": "Friandises", "s": false}, {"id": "i32", "n": "Kinder Schoko-Bons", "p": 3.05, "sp": 3.35, "c": "Friandises", "s": false}, {"id": "i33", "n": "Mikado Lait", "p": 1.95, "sp": 2.25, "c": "Friandises", "s": false}, {"id": "i34", "n": "Skittles Fruits", "p": 1.55, "sp": 1.85, "c": "Friandises", "s": false}, {"id": "i35", "n": "Haribo Goldbears", "p": 1.65, "sp": 1.95, "c": "Friandises", "s": false}, {"id": "i36", "n": "Haribo Happy Cola", "p": 1.65, "sp": 1.95, "c": "Friandises", "s": false}, {"id": "i37", "n": "Chips Lay's Nature 30 g", "p": 1.55, "sp": 1.85, "c": "Snacks salés", "s": false}, {"id": "i38", "n": "Chips Lay's Paprika 30 g", "p": 1.55, "sp": 1.85, "c": "Snacks salés", "s": false}, {"id": "i39", "n": "Tuc Original", "p": 1.65, "sp": 1.95, "c": "Snacks salés", "s": false}, {"id": "i40", "n": "Bretzels", "p": 1.4, "sp": 1.7, "c": "Snacks salés", "s": false}, {"id": "i41", "n": "Cacahuètes salées", "p": 1.8, "sp": 2.1, "c": "Snacks salés", "s": false}, {"id": "i42", "n": "Noix de cajou salées", "p": 2.5, "sp": 2.8, "c": "Snacks salés", "s": false}, {"id": "i43", "n": "Crackers Belin Croustilles", "p": 1.75, "sp": 2.05, "c": "Snacks salés", "s": false}]}</script>
+<script>
+(function(){
+var dataEl=document.getElementById('data');
+var state=JSON.parse(dataEl.textContent);
+var app=document.getElementById('app');
+var view='shop',filter='all',cart={},owner=false,dirty=false,note='',delId=null,draft=null,busy=false;
+var customer={name:'',room:''};
+var slot=null;
+var DAYS=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+var MONTHS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+function hm(x){return x.replace(':00','h').replace(':','h')}
+function schedLines(){
+  var d=state.delivery||{},order=[1,2,3,4,5,6,0],groups=[];
+  order.forEach(function(k,idx){
+    var v=d[k];if(!v)return;
+    var g=groups[groups.length-1];
+    if(g&&g.cut===v.cut&&g.from===v.from&&g.last===order[idx-1])g.last=k;
+    else groups.push({first:k,last:k,cut:v.cut,from:v.from});
+  });
+  return groups.map(function(g){
+    var n=g.first===g.last?DAYS[g.first]:DAYS[g.first]+' au '+DAYS[g.last];
+    return n.charAt(0).toUpperCase()+n.slice(1)+' : commande avant '+hm(g.cut)+', livraison le soir même dès '+hm(g.from)+'.';
+  });
+}
+function slots(n){
+  var d=state.delivery||{},out=[],now=new Date();
+  for(var i=0;i<21&&out.length<n;i++){
+    var day=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
+    var v=d[day.getDay()];if(!v)continue;
+    if(i===0){var c=v.cut.split(':');var cut=new Date(day.getTime());cut.setHours(+c[0],+c[1],0,0);if(now>=cut)continue;}
+    var key=day.getFullYear()+'-'+(day.getMonth()+1)+'-'+day.getDate();
+    var when=DAYS[day.getDay()]+' '+day.getDate()+' '+MONTHS[day.getMonth()];
+    var pre=i===0?'Ce soir, ':i===1?'Demain, ':'';
+    var lab=pre+(pre?when:when.charAt(0).toUpperCase()+when.slice(1))+', dès '+hm(v.from);
+    out.push({key:key,label:lab});
+  }
+  return out;
+}
+function slotLabel(){
+  var f=slots(8).filter(function(x){return x.key===slot})[0];
+  return f?f.label:'';
+}
+var money=function(n){return n.toFixed(2)};
+var price=function(i){return i.s?(i.sp!=null?i.sp:i.p):i.p};
+function h(tag,props){
+  var e=document.createElement(tag);
+  props=props||{};
+  Object.keys(props).forEach(function(k){
+    var v=props[k];
+    if(k==='class')e.className=v;
+    else if(k.indexOf('on')===0)e.addEventListener(k.slice(2),v);
+    else if(k==='value'||k==='checked'||k==='disabled'||k==='readOnly')e[k]=v;
+    else if(v!==false&&v!=null)e.setAttribute(k,v);
+  });
+  for(var i=2;i<arguments.length;i++){
+    var kids=[].concat(arguments[i]);
+    kids.forEach(function(c){
+      if(c==null||c===false)return;
+      e.append(c.nodeType?c:document.createTextNode(String(c)));
+    });
+  }
+  return e;
+}
+function lines(){
+  return state.items.filter(function(i){return cart[i.id]>0}).map(function(i){return {it:i,q:cart[i.id],sum:price(i)*cart[i.id]}});
+}
+function totals(){
+  var s=0,o=0,n=0;
+  lines().forEach(function(l){n+=l.q;if(l.it.s)s+=l.sum;else o+=l.sum});
+  var f=o>0?(state.fee||0):0;return {stock:s,order:o,fee:f,count:n,total:s+o+f};
+}
+function setQty(id,d){
+  cart[id]=Math.max(0,(cart[id]||0)+d);
+  render();
+}
+function chip(val,label){
+  return h('button',{class:'chip','aria-pressed':String(filter===val),onclick:function(){filter=val;render()}},label);
+}
+function thumbOf(it){
+  return it.img?h('img',{class:'thumb',src:it.img,alt:'',width:'52',height:'52'}):h('div',{class:'thumb','aria-hidden':'true'},it.n.charAt(0));
+}
+function row(it){
+  var q=cart[it.id]||0;
+  var ctl=q>0
+    ?h('div',{class:'step'},
+        h('button',{class:'sq','aria-label':'Retirer un '+it.n,onclick:function(){setQty(it.id,-1)}},'−'),
+        h('span',{class:'qty'},q),
+        h('button',{class:'sq','aria-label':'Ajouter un '+it.n,onclick:function(){setQty(it.id,1)}},'+'))
+    :h('button',{class:'btn alt','aria-label':'Ajouter '+it.n,onclick:function(){setQty(it.id,1)}},'Ajouter');
+  return h('div',{class:'row'},thumbOf(it),
+    h('div',{},h('div',{class:'name'},it.n),
+      h('div',{class:'meta'},it.s?h('span',{class:'st'},'En stock'):'Sur commande',' · ',money(price(it)),' CHF')),
+    ctl);
+}
+function contact(){
+  return h('p',{class:'foot'},'Une question ou un article à proposer ? Écris-moi sur Snapchat : ',
+    h('a',{href:'https://www.snapchat.com/add/'+state.snap,target:'_blank',rel:'noopener'},state.snap),
+    ' ou par mail : ',h('a',{href:'mailto:'+state.email},state.email),'.');
+}
+function header(){
+  return h('header',{},
+    h('div',{class:'top'},h('h1',{},state.title),
+      owner?h('button',{class:'btn alt small',onclick:function(){view='admin';draft=null;note='';render()}},'Gérer'):null),
+    h('p',{class:'sub'},state.tagline),
+    h('div',{class:'rules'},h('div',{style:'font-weight:700;margin-bottom:6px'},'Phase de test pendant 2 à 3 semaines. Selon la demande, je continue ou j’arrête.'),schedLines().map(function(x){return h('div',{},x)}),h('div',{},'Frais de livraison : '+money(state.fee)+' CHF par commande. Je vais au Leclerc dès que les commandes payées du jour atteignent '+state.threshold+' CHF. Sinon, ta commande est reportée au jour de livraison suivant, sans frais en plus.'),h('div',{},'Après l’heure limite, c’est aussi le jour suivant. Pas de livraison le vendredi ni le week-end.'),h('div',{style:'margin-top:6px;font-weight:700'},'Paiement par TWINT au '+state.twint+' au moment de la commande, avant l’heure limite. Commande non payée = commande annulée.'),h('div',{},'Articles en stock : paiement sur place, TWINT ou cash.'),h('div',{style:'margin-top:6px'},'Minimum '+money(state.min)+' CHF pour la partie sur commande. Pas de minimum pour les articles en stock.')));
+}
+function shopView(){
+  var w=h('div',{class:'wrap'});
+  w.append(header());
+  var st=state.items.filter(function(i){return i.s});
+  if(st.length){
+    w.append(h('h2',{},'Dispo tout de suite'),h('p',{class:'sub'},'En stock chez moi. Passe me voir pour le récupérer.'));
+    st.forEach(function(i){w.append(row(i))});
+  }
+  var rest=state.items.filter(function(i){return !i.s});
+  var present=state.cats.filter(function(c){return rest.some(function(i){return i.c===c})});
+  if(filter!=='all'&&present.indexOf(filter)<0)filter='all';
+  w.append(h('h2',{},'Sur commande'),h('p',{class:'sub'},'Livré le soir, du lundi au jeudi, selon les horaires ci-dessus.'));
+  w.append(h('div',{class:'chips'},chip('all','Tout'),present.map(function(c){return chip(c,c)})));
+  var list=rest.filter(function(i){return filter==='all'||i.c===filter});
+  if(!list.length)w.append(h('p',{class:'sub'},'Aucun article pour le moment.'));
+  list.forEach(function(i){w.append(row(i))});
+  w.append(contact());
+  return w;
+}
+function bar(){
+  var t=totals();
+  if(!t.count)return null;
+  return h('div',{class:'bar'},
+    h('div',{class:'tot'},t.count+(t.count>1?' articles':' article')+' · '+money(t.total)+' CHF'),
+    h('button',{class:'btn',onclick:function(){view='cart';render();window.scrollTo(0,0)}},'Voir ma commande'));
+}
+function orderText(){
+  var L=lines();
+  var st=L.filter(function(l){return l.it.s});
+  var od=L.filter(function(l){return !l.it.s});
+  var t=totals();
+  var out=['Salut, voici ma commande.','Nom : '+customer.name.trim(),'Chambre : '+customer.room.trim()];if(od.length){out.push('Livraison : '+slotLabel());out.push('Payé par TWINT au '+state.twint+' : '+money(t.order+t.fee)+' CHF (dont '+money(t.fee)+' de frais de livraison)');}out.push('');
+  if(st.length){out.push('Dispo tout de suite (je passe les chercher) :');st.forEach(function(l){out.push('- '+l.q+' x '+l.it.n+' ('+money(l.sum)+')')});out.push('')}
+  if(od.length){out.push('Sur commande :');od.forEach(function(l){out.push('- '+l.q+' x '+l.it.n+' ('+money(l.sum)+')')});out.push('')}
+  out.push('Total : '+money(t.total)+' CHF');
+  return out.join('\n');
+}
+function openUrl(u){
+  var w=window.open(u,'_blank');
+  if(!w)window.location.href=u;
+}
+function cartView(){
+  var w=h('div',{class:'wrap'});
+  w.append(h('button',{class:'btn alt small',onclick:function(){view='shop';render()}},'Retour aux produits'),
+    h('h1',{style:'margin-top:18px'},'Ma commande'));
+  var L=lines();
+  if(!L.length){w.append(h('p',{class:'sub'},'Ton panier est vide.'));return w;}
+  L.forEach(function(l){w.append(row(l.it))});
+  var t=totals();
+  var box=h('div',{class:'box'});
+  if(t.stock>0)box.append(h('div',{class:'line'},h('span',{},'En stock'),h('span',{},money(t.stock)+' CHF')));
+  if(t.order>0)box.append(h('div',{class:'line'},h('span',{},'Sur commande'),h('span',{},money(t.order)+' CHF')));
+  if(t.fee>0)box.append(h('div',{class:'line'},h('span',{},'Frais de livraison'),h('span',{},money(t.fee)+' CHF')));
+  box.append(h('div',{class:'line big'},h('span',{},'Total'),h('span',{},money(t.total)+' CHF')));
+  w.append(box);
+  var missing=t.order>0&&t.order<state.min;
+  if(missing)w.append(h('div',{class:'warn'},'Il manque '+money(state.min-t.order)+' CHF sur la partie « sur commande » (minimum '+money(state.min)+' CHF). Ajoute un article ou retire-la.'));
+  var S=t.order>0?slots(4):[];
+  if(t.order>0){
+    if(!S.some(function(x){return x.key===slot}))slot=S.length?S[0].key:null;
+    var ssel=h('select',{id:'cslot',onchange:function(e){slot=e.target.value;refresh()}},S.map(function(x){return h('option',{value:x.key},x.label)}));
+    if(slot)ssel.value=slot;
+    w.append(h('label',{for:'cslot'},'Quand veux-tu être livré ?'),ssel,h('p',{class:'note'},'Pour les articles sur commande. Je livre à l’internat à partir de l’heure indiquée, si le seuil de commandes du jour est atteint. Sinon, c’est le jour suivant.'));
+  }
+  var nameIn=h('input',{type:'text',id:'cname',value:customer.name,autocomplete:'given-name',oninput:function(e){customer.name=e.target.value;refresh()}});
+  var roomIn=h('input',{type:'text',id:'croom',value:customer.room,oninput:function(e){customer.room=e.target.value;refresh()}});
+  w.append(h('label',{for:'cname'},'Ton prénom'),nameIn,h('label',{for:'croom'},'Ta chambre'),roomIn);
+  var ta=h('textarea',{id:'otext',readOnly:true,'aria-label':'Texte de la commande'});
+  var hint=h('p',{class:'note'},'');
+  var mailBtn=h('button',{class:'btn',onclick:function(){
+    openUrl('mailto:'+state.email+'?subject='+encodeURIComponent('Commande kiosque')+'&body='+encodeURIComponent(orderText()));
+  }},'Envoyer par e-mail');
+  var copyBtn=h('button',{class:'btn alt',onclick:function(){
+    var txt=orderText();
+    var done=function(){hint.textContent='Commande copiée. Colle-la dans Snapchat.'};
+    var fallback=function(){ta.focus();ta.select();try{document.execCommand('copy');done()}catch(e){hint.textContent='Appuie longuement sur le texte pour le copier.'}};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fallback)}else fallback();
+  }},'Copier la commande');
+  var snap=h('a',{class:'btn alt',href:'https://www.snapchat.com/add/'+state.snap,target:'_blank',rel:'noopener'},'Ouvrir Snapchat');
+  function refresh(){
+    var ok=!missing&&customer.name.trim()&&customer.room.trim()&&(t.order===0||slot);
+    mailBtn.disabled=!ok;copyBtn.disabled=!ok;
+    ta.value=ok?orderText():'';
+    if(!ok&&!missing)hint.textContent='Écris ton prénom et ta chambre pour envoyer ta commande.';
+    else if(!ok)hint.textContent='';
+    else hint.textContent='Envoie-la par e-mail, ou copie-la et colle-la dans Snapchat.';
+  }
+  w.append(h('label',{for:'otext'},'Ta commande'),ta,h('div',{class:'acts'},mailBtn,copyBtn,snap),hint);
+  if(t.order>0)w.append(h('div',{class:'box',style:'border:2px solid var(--green)'},h('strong',{},'Paiement : '),'envoie '+money(t.order+t.fee)+' CHF par TWINT au '+state.twint+' avant l’heure limite. Ta commande est validée quand je reçois le paiement.'+(t.stock>0?' Les articles en stock se paient sur place.':'')));
+  refresh();
+  w.append(contact());
+  return w;
+}
+function shrink(file){
+  return new Promise(function(res,rej){
+    var fr=new FileReader();
+    fr.onerror=function(){rej(new Error('Lecture impossible'))};
+    fr.onload=function(){
+      var im=new Image();
+      im.onerror=function(){rej(new Error('Image illisible'))};
+      im.onload=function(){
+        var S=280,c=document.createElement('canvas');c.width=S;c.height=S;
+        var g=c.getContext('2d');
+        var m=Math.min(im.width,im.height),sx=(im.width-m)/2,sy=(im.height-m)/2;
+        g.fillStyle='#fff';g.fillRect(0,0,S,S);
+        g.drawImage(im,sx,sy,m,m,0,0,S,S);
+        res(c.toDataURL('image/jpeg',0.78));
+      };
+      im.src=fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+function num(v){var n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:NaN}
+function saveDraft(){
+  var p=num(draft.p);
+  if(!draft.n.trim()){note='Donne un nom à l’article.';render();return;}
+  if(!(p>0)){note='Indique un prix valide.';render();return;}
+  var sp=draft.s?num(draft.sp):NaN;
+  var item={id:draft.id||('i'+Date.now()),n:draft.n.trim(),p:Math.round(p*20)/20,sp:isFinite(sp)&&sp>0?Math.round(sp*20)/20:Math.round((p+0.3)*20)/20,c:draft.c,s:!!draft.s};
+  if(draft.img)item.img=draft.img;
+  var idx=state.items.findIndex(function(i){return i.id===item.id});
+  if(idx>=0)state.items[idx]=item;else state.items.unshift(item);
+  draft=null;dirty=true;note='Article enregistré. Pense à publier les changements.';
+  render();
+}
+async function publishNow(){
+  var c=window.claude;
+  busy=true;note='';render();
+  try{
+    var art=c&&c.use?await c.use('artifact'):null;
+    if(!art)throw new Error('Publication indisponible ici. Ouvre la page depuis ton compte.');
+    var clone=document.documentElement.cloneNode(true);
+    clone.querySelector('#data').textContent=JSON.stringify(state).replace(/</g,'\\u003c');
+    clone.querySelector('#app').textContent='';
+    await art.publish('<!doctype html>\n'+clone.outerHTML);
+    dirty=false;note='Publié.';
+  }catch(e){
+    note='Publication impossible : '+((e&&(e.message||e.code))||'erreur');
+  }
+  busy=false;render();
+}
+function adminView(){
+  var w=h('div',{class:'wrap'});
+  w.append(h('button',{class:'btn alt small',onclick:function(){view='shop';render()}},'Retour au site'),
+    h('h1',{style:'margin-top:18px'},'Gérer le catalogue'),
+    h('p',{class:'sub'},'Tes changements ne sont visibles par les autres qu’après avoir publié.'),
+    h('div',{class:'acts'},h('button',{class:'btn',disabled:!dirty||busy,onclick:publishNow},busy?'Publication…':'Publier les changements'),
+      draft?null:h('button',{class:'btn alt',onclick:function(){draft={n:'',p:'',sp:'',c:state.cats[0],s:false,img:null};note='';render()}},'Ajouter un article')));
+  if(note)w.append(h('p',{class:'note',role:'status'},note));
+  if(draft){
+    var f=h('div',{class:'box'});
+    f.append(h('label',{for:'dn'},'Nom'),h('input',{type:'text',id:'dn',value:draft.n,oninput:function(e){draft.n=e.target.value}}));
+    f.append(h('label',{for:'dp'},'Prix sur commande (CHF)'),h('input',{type:'text',id:'dp',inputmode:'decimal',value:draft.p,oninput:function(e){draft.p=e.target.value}}));
+    var sel=h('select',{id:'dc',onchange:function(e){draft.c=e.target.value}},state.cats.map(function(c){return h('option',{value:c},c)}));
+    sel.value=draft.c;
+    f.append(h('label',{for:'dc'},'Catégorie'),sel);
+    f.append(h('label',{class:'cb'},h('input',{type:'checkbox',checked:!!draft.s,onchange:function(e){draft.s=e.target.checked;if(draft.s&&!draft.sp)draft.sp=String(Math.round((num(draft.p)+0.3)*20)/20||'');render()}}),'Disponible directement (en stock)'));
+    if(draft.s)f.append(h('label',{for:'ds'},'Prix en stock (CHF)'),h('input',{type:'text',id:'ds',inputmode:'decimal',value:draft.sp,oninput:function(e){draft.sp=e.target.value}}));
+    f.append(h('label',{for:'dimg'},'Photo'),h('input',{type:'file',id:'dimg',accept:'image/*',onchange:function(e){
+      var file=e.target.files[0];if(!file)return;
+      shrink(file).then(function(d){draft.img=d;render()},function(err){note=err.message;render()});
+    }}));
+    if(draft.img)f.append(h('img',{class:'preview',src:draft.img,alt:'Aperçu'}),h('div',{class:'acts'},h('button',{class:'btn alt small',onclick:function(){draft.img=null;render()}},'Retirer la photo')));
+    f.append(h('div',{class:'acts'},h('button',{class:'btn',onclick:saveDraft},'Enregistrer l’article'),h('button',{class:'btn alt',onclick:function(){draft=null;note='';render()}},'Annuler')));
+    w.append(f);
+  }
+  w.append(h('h2',{},'Articles ('+state.items.length+')'));
+  state.cats.forEach(function(c){
+    var L=state.items.filter(function(i){return i.c===c});
+    if(!L.length)return;
+    w.append(h('h2',{style:'font-size:18px;color:var(--muted)'},c));
+    L.forEach(function(it){
+      w.append(h('div',{class:'arow'},
+        h('div',{class:'row',style:'border:0;padding:0'},thumbOf(it),
+          h('div',{},h('div',{class:'name'},it.n),h('div',{class:'meta'},money(it.p)+' CHF sur commande'+(it.s?' · en stock '+money(it.sp!=null?it.sp:it.p)+' CHF':'')))),
+        h('div',{class:'acts'},
+          h('button',{class:'btn alt small',onclick:function(){draft={id:it.id,n:it.n,p:String(it.p),sp:String(it.sp!=null?it.sp:''),c:it.c,s:it.s,img:it.img||null};note='';render();window.scrollTo(0,0)}},'Modifier'),
+          h('button',{class:'btn alt small','aria-pressed':String(!!it.s),onclick:function(){it.s=!it.s;dirty=true;render()}},it.s?'En stock : oui':'En stock : non'),
+          delId===it.id
+            ?[h('button',{class:'btn small',onclick:function(){state.items=state.items.filter(function(x){return x.id!==it.id});delete cart[it.id];delId=null;dirty=true;render()}},'Confirmer la suppression'),h('button',{class:'btn alt small',onclick:function(){delId=null;render()}},'Annuler')]
+            :h('button',{class:'btn alt small',onclick:function(){delId=it.id;render()}},'Supprimer'))));
+    });
+  });
+  return w;
+}
+function render(){
+  var y=window.scrollY;
+  app.textContent='';
+  if(view==='admin'&&!owner)view='shop';
+  app.append(view==='cart'?cartView():view==='admin'?adminView():shopView());
+  if(view==='shop'){var b=bar();if(b)app.append(b)}
+  window.scrollTo(0,y);
+}
+render();
+(async function(){
+  try{
+    var c=window.claude;
+    if(!c||!c.use)return;
+    var u=await c.use('user');
+    if(u&&(u.isOwner()||u.canEdit())){owner=true;render()}
+  }catch(e){}
+})();
+})();
+</script>
+</body>
+</html>
